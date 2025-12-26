@@ -6,8 +6,9 @@ import Inventory from '@/components/Inventory';
 import Suppliers from '@/components/Suppliers';
 import ListingOptimizer from '@/components/ListingOptimizer';
 import Goals from '@/components/Goals';
+import AIAgent from '@/components/AIAgent';
 
-type Tab = 'dashboard' | 'inventory' | 'suppliers' | 'optimizer' | 'goals';
+type Tab = 'dashboard' | 'inventory' | 'suppliers' | 'optimizer' | 'goals' | 'ai-agent';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
@@ -61,6 +62,13 @@ export default function Home() {
             >
               Goals
             </TabButton>
+            <TabButton
+              active={activeTab === 'ai-agent'}
+              onClick={() => setActiveTab('ai-agent')}
+              icon="🤖"
+            >
+              AI Agent
+            </TabButton>
           </div>
         </div>
       </nav>
@@ -72,6 +80,7 @@ export default function Home() {
         {activeTab === 'suppliers' && <Suppliers />}
         {activeTab === 'optimizer' && <ListingOptimizer />}
         {activeTab === 'goals' && <Goals />}
+        {activeTab === 'ai-agent' && <AIAgent />}
       </main>
 
       {/* Footer */}
