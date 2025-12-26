@@ -27,124 +27,33 @@ export default function AIAgent() {
   const runResearch = async () => {
     setIsResearching(true);
 
-    // Simulate AI research
-    setTimeout(() => {
-      const mockOpportunities: ProductOpportunity[] = [
-        {
-          id: '1',
-          name: 'Vintage Nike Air Jordan 1 (1985-2000)',
-          category: 'shoes',
-          estimatedCost: 30,
-          estimatedSellPrice: 120,
-          projectedProfit: 75,
-          profitMargin: 62.5,
-          demandScore: 95,
-          competitionScore: 45,
-          confidenceScore: 88,
-          source: 'AI Market Analysis',
-          reasoning: 'Classic sneakers have consistent demand. Original Air Jordans from 85-2000 era sell for premium prices. Low supply + high nostalgia = strong margins.',
-          dataPoints: {
-            averageSoldPrice: 120,
-            soldCount30Days: 450,
-            activeListings: 80,
-            trendingScore: 92
-          },
-          recommended: true,
-          timestamp: new Date().toISOString()
-        },
-        {
-          id: '2',
-          name: 'Carhartt Vintage Work Jackets',
-          category: 'clothing',
-          estimatedCost: 15,
-          estimatedSellPrice: 60,
-          projectedProfit: 38,
-          profitMargin: 63.3,
-          demandScore: 85,
-          competitionScore: 35,
-          confidenceScore: 82,
-          source: 'AI Market Analysis',
-          reasoning: 'Workwear trend is strong. Vintage Carhartt has cult following. Easy to find at thrift stores. Sell to fashion-conscious buyers at premium.',
-          dataPoints: {
-            averageSoldPrice: 60,
-            soldCount30Days: 320,
-            activeListings: 45,
-            trendingScore: 87
-          },
-          recommended: true,
-          timestamp: new Date().toISOString()
-        },
-        {
-          id: '3',
-          name: 'Patagonia Fleece (Better Sweater)',
-          category: 'clothing',
-          estimatedCost: 20,
-          estimatedSellPrice: 75,
-          projectedProfit: 46,
-          profitMargin: 61.3,
-          demandScore: 90,
-          competitionScore: 50,
-          confidenceScore: 85,
-          source: 'AI Market Analysis',
-          reasoning: 'Patagonia holds value exceptionally well. Better Sweater is iconic piece. Strong brand loyalty. Found frequently at thrift stores.',
-          dataPoints: {
-            averageSoldPrice: 75,
-            soldCount30Days: 280,
-            activeListings: 65,
-            trendingScore: 84
-          },
-          recommended: true,
-          timestamp: new Date().toISOString()
-        },
-        {
-          id: '4',
-          name: 'Lululemon Align Leggings',
-          category: 'clothing',
-          estimatedCost: 12,
-          estimatedSellPrice: 55,
-          projectedProfit: 36,
-          profitMargin: 65.5,
-          demandScore: 92,
-          competitionScore: 60,
-          confidenceScore: 80,
-          source: 'AI Market Analysis',
-          reasoning: 'Massive demand for discounted Lululemon. Align leggings are bestseller. Easy to ship. Quick turnover. Watch for pilling issues.',
-          dataPoints: {
-            averageSoldPrice: 55,
-            soldCount30Days: 890,
-            activeListings: 250,
-            trendingScore: 89
-          },
-          recommended: true,
-          timestamp: new Date().toISOString()
-        },
-        {
-          id: '5',
-          name: 'Apple AirPods Pro (1st/2nd Gen)',
-          category: 'other',
-          estimatedCost: 80,
-          estimatedSellPrice: 140,
-          projectedProfit: 45,
-          profitMargin: 32.1,
-          demandScore: 98,
-          competitionScore: 75,
-          confidenceScore: 70,
-          source: 'AI Market Analysis',
-          reasoning: 'Extremely high demand. Fast sales. Higher risk (fakes, condition issues). Verify authenticity. Check battery health before buying.',
-          dataPoints: {
-            averageSoldPrice: 140,
-            soldCount30Days: 1200,
-            activeListings: 450,
-            trendingScore: 95
-          },
-          recommended: false,
-          timestamp: new Date().toISOString()
-        }
-      ];
+    try {
+      // Call real Claude API
+      const response = await fetch('/api/ai/research', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          budget: agent.budget.daily,
+          targetMargin: agent.targetMargin,
+          strategy: agent.strategy
+        })
+      });
 
-      setOpportunities(mockOpportunities);
+      const data = await response.json();
+
+      if (data.error) {
+        console.error('AI API Error:', data.error);
+        alert(`⚠️ ${data.error}\n\nMake sure ANTHROPIC_API_KEY is set in .env.local`);
+        setIsResearching(false);
+      } else {
+        setOpportunities(data.opportunities);
+        setIsResearching(false);
+      }
+    } catch (error) {
+      console.error('Research error:', error);
+      alert('Failed to connect to AI. Check that the server is running and API key is configured.');
       setIsResearching(false);
-    }, 2000);
+    }
   };
 
   const toggleAgent = () => {
